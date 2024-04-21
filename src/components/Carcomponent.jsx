@@ -40,7 +40,7 @@ const Carcomponent = ({ data }) => {
       className="px-3 sm:px-0 col-span-1 w-full flex justify-center items-center"
     >
       <div
-        className={`w-full lg:min-w-[350px]  h-[220px] lg:max-w-full lg:h-[220px] relative rounded-xl border border-gray-50  shadow-lg ${
+        className={`w-full lg:min-w-[335px]  h-[220px] lg:max-w-full lg:h-[220px] relative rounded-xl border border-gray-50  shadow-lg ${
           data.occupied ? "bg-[#EEEEEE]" : "bg-green-300"
         }`}
       >
@@ -72,10 +72,7 @@ const Carcomponent = ({ data }) => {
             <p className="text-black">
               Parked{" "}
               {Math.round(
-                calculate_hour_diff(
-                  data.parkingdata.entry_time,
-                  data.parkingdata.exit_time
-                )
+                calculate_hour_diff_last(data.parkingdata.entry_time)
               )}{" "}
               hr ago.
             </p>

@@ -7,41 +7,51 @@ import { IoMdClose } from "react-icons/io";
 const App = () => {
   const [jsondata, setjsondata] = useState([])
   const [spaceno, setSpaceno] = useState("")
+  const [totalspace, setTotalspace] = useState(0)
+  const [occupied_spaces, setOccupied_spaces] = useState(0)
   useEffect(() => {
     const fetchdata = () => {
       const q = query(collection(db, "parking_area1"))
+      
       const unsub = onSnapshot(q, (docref) => {
+        let total_spaces =0;
+        let no_of_occupied_spaces=0;
         let array = []
         docref.forEach((data) => {
-          console.log(data.data())
+          total_spaces = total_spaces + 1
+          if (data.data().occupied === true){
+            no_of_occupied_spaces = no_of_occupied_spaces + 1
+          }
+
           array.push(data.data())
         })
         setjsondata(array);
+        setTotalspace(total_spaces)
+        setOccupied_spaces(no_of_occupied_spaces)
       });
     }
     fetchdata()
   }, [])
-  const handlesenddata =async () => {
-        const data ={
-          parkingspace_id: spaceno,
-          occupied: false,
-          parkingdata:
-          {
-            entry_time: "",
-            exit_time: ""
-          }
-    
-        }
-        const docref = await addDoc(collection(db,"parking_area1"),data)
-        alert("Space has been successfully created")
-        setSpaceno("")
-        setAddspace(false)
+  const handlesenddata = async () => {
+    const data = {
+      parkingspace_id: spaceno,
+      occupied: false,
+      parkingdata:
+      {
+        entry_time: "",
+        exit_time: ""
+      }
+
+    }
+    const docref = await addDoc(collection(db, "parking_area1"), data)
+    alert("Space has been successfully created")
+    setSpaceno("")
+    setAddspace(false)
   }
   const [addspace, setAddspace] = useState(false)
 
   return (
     <>
-
       <nav className='absolute w-full h-[50px] bg-[#191a1c] flex justify-center items-center '>
         <p className='text-[#EEEEEE] font-semibold'>
           Parking Management
@@ -59,7 +69,7 @@ const App = () => {
             <div className='w-[300px]  px-[80px] py-[80px] flex flex-col justify-start items-center bg-[rgba(247,247,247,0.87)] border rounded-xl backdrop-blur-sm z-50 relative'>
               <p className='w-full text-center text-xs '>New parking space.</p>
               <p className='w-full text-center text-lg font-semibold'>Space NO</p>
-              <input className='w-full bg-white border rounded-lg px-3 py-2  active:outline-1 outline-orange-400 mt-2 parkingno' placeholder='eg,8005' value={spaceno} onChange={(e)=>{
+              <input className='w-full bg-white border rounded-lg px-3 py-2  active:outline-1 outline-orange-400 mt-2 parkingno' placeholder='eg,8005' value={spaceno} onChange={(e) => {
                 const inputValue = e.target.value;
                 const regex = /^\d{0,4}$/;
                 if (regex.test(inputValue)) {
@@ -78,12 +88,39 @@ const App = () => {
           </div>
         )
       }
-      <div className='w-full pt-[80px] pb-[40px]'>
-        <div className='w-full h-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3   justify-center items-center sm:px-2 xl:px-[60px] gap-[10px]'>
+      <div className='w-full h-[300px]  bg-black flex flex-col justify-center items-center'>
+        <div className='w-full flex justify-center items-center'>
+          <p className='text-white flex flex-col lg:flex-row justify-center items-center gap-2'>
+            <span>
+              Total Spaces 
+            </span>
+            <span className='text-4xl lg:text-[30pt] text-white parkingno'>
+              {totalspace}
+            </span>
+          </p>
+        </div><div className='w-full flex justify-center items-center gap-[30px] mt-4'>
+          <p className='text-white flex flex-col lg:flex-row justify-center items-center gap-2'>
+            <span>
+              Occupied Spaces 
+            </span>
+            <span className='text-4xl lg:text-[30pt] text-white parkingno flex flex-col lg:flex-row justify-center items-center relative'>
+             <span>{occupied_spaces}</span><p className='scale-90 px-1 text-xs text-white bg-orange-400 border rounded-r-full rounded-l-full mt-2 '> occupied</p>
+            </span>
+          </p><p className='text-white flex flex-col lg:flex-row justify-center items-center gap-2'>
+            <span>
+              Available Spaces 
+            </span>
+            <span className='text-4xl lg:text-[30pt] text-white parkingno flex flex-col lg:flex-row justify-center items-center relative'>
+             <span>{totalspace-occupied_spaces}</span><p className='scale-90 px-1 text-xs text-white bg-green-500 border rounded-r-full rounded-l-full mt-2 '> Available</p>
+            </span>
+          </p>
+        </div>
+      </div>
+      <div className='w-full pt-[10px] pb-[40px]'>
+        <div className='w-full h-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3   justify-center items-center sm:px-2 xl:px-[60px] gap-[10px]'>
           {
             jsondata.map((data) => (
               <Carcomponent key={data.parkingspace_id} data={data} />
-
             ))
 
           }
