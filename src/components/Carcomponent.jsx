@@ -1,5 +1,6 @@
 import React from "react";
 import carmodel from "../assets/carmodel.png";
+import {motion,AnimatePresence} from "framer-motion"
 const Carcomponent = ({ data }) => {
   const calculate_hour_diff_last = (exittimestamp) => {
     if (exittimestamp !== "") {
@@ -45,6 +46,7 @@ const Carcomponent = ({ data }) => {
         }`}
       >
         <div className="w-[130px] absolute  z-30 top-[50%] -translate-y-[50%] right-[80px] rotate-90">
+        <AnimatePresence>
           {!data.occupied ? (
             <>
               <div className="-rotate-90">
@@ -54,12 +56,13 @@ const Carcomponent = ({ data }) => {
               </div>
             </>
           ) : (
-            <img
+            <motion.img initial={{y:-100}} animate={{y:0 }} transition={{ease:"easeInOut",duration:1}} exit={{opacity:0,y:-100}}
               src={carmodel}
               className="w-full scale-110  xl:scale-[110%] "
               alt=""
             />
-          )}
+           
+          )} </AnimatePresence>
         </div>
         <p className="absolute parkingno top-0 text-[50pt] font-semibold text-gray-700 flex justify-center items-center gap-2 px-3">
           <span className="text-[#F05D23]">no</span>{" "}
