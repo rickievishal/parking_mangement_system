@@ -36,6 +36,7 @@ const Carcomponent = ({ data }) => {
   };
 
   return (
+    <AnimatePresence>
     <div
       key={data.parkingspace_id}
       className="px-3 sm:px-0 col-span-1 w-full flex justify-center items-center"
@@ -100,6 +101,7 @@ const Carcomponent = ({ data }) => {
         )}
       </div>
     </div>
+    </AnimatePresence>
   );
 };
 

@@ -68,19 +68,20 @@ const App = () => {
         const docSnapshot = querySnapshot.docs[0];
         const docRef = doc(db, "parking_area1", docSnapshot.id);
   
-        // Update the occupied field
+        // Toggle the 'occupied' status
+        const currentOccupied = docSnapshot.data().occupied;
         await updateDoc(docRef, {
-          occupied: true,
-          "parkingdata.entry_time": new Date().toISOString(), // Add the entry time
+          occupied: !currentOccupied,
+          "parkingdata.entry_time": currentOccupied ? "" : new Date().toISOString(),  // Update entry_time if occupied
+          "parkingdata.exit_time": currentOccupied ? new Date().toISOString() : "", // Update exit_time if not occupied
         });
   
-        console.log("Parking space updated successfully.");
+        console.log("Parking space status updated successfully.");
       } else {
         console.log("No parking space found with ID:", spaceId);
       }
-      setSetspacestatusno("")
     } catch (error) {
-      console.error("Error updating parking status:", error);
+      console.error("Error updating parking space status:", error);
     }
   };
   
